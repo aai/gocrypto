@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/st3fan/gocrypto.svg)](https://travis-ci.org/st3fan/gocrypto)
+[![Build Status](https://travis-ci.org/aai/gocrypto.svg?branch=master)](https://travis-ci.org/aai/gocrypto)
 
 # Go Crypto Utilities
 
@@ -10,4 +10,3 @@ This repository contains miscellaneous *high level* crypto utilities
 for Go. It is generally a bad idea to implement your own, but some
 things are missing from the Go standard library, like for example
 PKCS#7 Detached Signatures.
-
