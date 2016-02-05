@@ -37,14 +37,14 @@ func Sign2(r io.Reader, cert *x509.Certificate, priv *rsa.PrivateKey, intermedia
 	signedData := SignedData{
 		Version: 1,
 		DigestAlgorithms: []AlgorithmIdentifier{
-			AlgorithmIdentifier{Algorithm: oidSHA256, Parameters: asn1.RawValue{Tag: 5}},
+			{Algorithm: oidSHA256, Parameters: asn1.RawValue{Tag: 5}},
 		},
 		ContentInfo: ContentInfo{
 			ContentType: oidPKCS7Data,
 		},
 		Certificates: asn1.RawValue{Class: 2, Tag: 0, Bytes: raw, IsCompound: true},
 		SignerInfos: []SignerInfo{
-			SignerInfo{
+			{
 				Version: 1,
 				SignedIdentifier: IssuerAndSerialNumber{
 					Issuer:       asn1.RawValue{FullBytes: cert.RawIssuer},
