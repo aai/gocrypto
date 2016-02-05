@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
+// Package pkcs7 provides signing based on RFC 2315.
 package pkcs7
 
 import (
@@ -15,12 +16,23 @@ import (
 	"time"
 )
 
+// Sign data with cert & private key.
 func Sign(r io.Reader, cert *x509.Certificate, priv *rsa.PrivateKey) ([]byte, error) {
+	return Sign2(r, cert, priv, nil)
+}
+
+// Sign2 reader with a cert, private key, and intermediate cert.
+func Sign2(r io.Reader, cert *x509.Certificate, priv *rsa.PrivateKey, intermediate *x509.Certificate) ([]byte, error) {
 	hash := sha256.New()
 	if _, err := io.Copy(hash, r); err != nil {
 		return nil, err
 	}
 	messageDigest := hash.Sum(nil)
+
+	raw := cert.Raw
+	if intermediate != nil {
+		raw = append(raw, intermediate.Raw...)
+	}
 
 	signedData := SignedData{
 		Version: 1,
@@ -30,7 +42,7 @@ func Sign(r io.Reader, cert *x509.Certificate, priv *rsa.PrivateKey) ([]byte, er
 		ContentInfo: ContentInfo{
 			ContentType: oidPKCS7Data,
 		},
-		Certificates: asn1.RawValue{Class: 2, Tag: 0, Bytes: cert.Raw, IsCompound: true},
+		Certificates: asn1.RawValue{Class: 2, Tag: 0, Bytes: raw, IsCompound: true},
 		SignerInfos: []SignerInfo{
 			SignerInfo{
 				Version: 1,
